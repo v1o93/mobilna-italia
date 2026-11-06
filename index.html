@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kolejka Pizz">
+  <meta name="theme-color" content="#1B4D3E">
+  <meta name="description" content="Kolejka zamówień pizz – Mobilna Italia">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <title>Mobilna Italia – Kolejka Pizz</title>
+  <style>
+    :root {
+      --bg: #F5F0E6;
+      --green: #1B4D3E;
+      --green-dark: #0F3329;
+      --green-light: #2A6B55;
+      --cream: #FDF8F0;
+      --red: #C8102E;
+      --red-dark: #9E0C24;
+      --text: #1A1A1A;
+      --text-muted: #5A5A5A;
+      --border: #E0D8C8;
+      --shadow: rgba(27, 77, 62, 0.12);
+      --radius: 14px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
+    }
+
+    /* Header */
+    header {
+      background: var(--green);
+      color: white;
+      padding: 14px 16px 12px;
+      text-align: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    header p {
+      font-size: 0.75rem;
+      opacity: 0.85;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* Main content */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 12px 12px 0;
+    }
+
+    /* Pizza buttons grid */
+    .pizzas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      flex-shrink: 0;
+      margin-bottom: 14px;
+    }
+
+    .pizza-btn {
+      background: var(--cream);
+      border: 2px solid var(--green);
+      color: var(--green-dark);
+      border-radius: var(--radius);
+      padding: 16px 8px;
+      font-size: 0.95rem;
+      font-weight: 650;
+      line-height: 1.25;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.12s, transform 0.08s, box-shadow 0.12s;
+      box-shadow: 0 2px 6px var(--shadow);
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .pizza-btn:active {
+      background: var(--green);
+      color: white;
+      transform: scale(0.97);
+      box-shadow: 0 1px 3px var(--shadow);
+    }
+
+    /* Undo bar */
+    .undo-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .undo-btn {
+      flex: 1;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(200, 16, 46, 0.25);
+      transition: background 0.12s, transform 0.08s;
+      user-select: none;
+    }
+
+    .undo-btn:active {
+      background: var(--red-dark);
+      transform: scale(0.98);
+    }
+
+    .undo-btn:disabled {
+      background: #B0A89A;
+      box-shadow: none;
+      opacity: 0.7;
+      cursor: default;
+    }
+
+    .count-badge {
+      background: var(--green);
+      color: white;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      min-width: 70px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+
+    /* Queue section */
+    .queue-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: white;
+      border-radius: var(--radius) var(--radius) 0 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      box-shadow: 0 -2px 10px var(--shadow);
+    }
+
+    .queue-header {
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background: var(--cream);
+    }
+
+    .queue-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green-dark);
+    }
+
+    .queue-header span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .queue-list {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px;
+    }
+
+    .queue-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 10px 10px 14px;
+      margin-bottom: 8px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .queue-item .name {
+      flex: 1;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .check-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: var(--green);
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px var(--shadow);
+      transition: background 0.12s, transform 0.08s;
+      user-select: none;
+    }
+
+    .check-btn:active {
+      background: var(--green-dark);
+      transform: scale(0.94);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .empty-state strong {
+      display: block;
+      color: var(--green);
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+
+    /* Footer note */
+    footer {
+      text-align: center;
+      padding: 6px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mobilna Italia</h1>
+    <p>Kolejka Pizz</p>
+  </header>
+
+  <main>
+    <div class="pizzas" id="pizzaButtons">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="undo-bar">
+      <button class="undo-btn" id="undoBtn" disabled>COFNIJ</button>
+      <div class="count-badge" id="countBadge">0</div>
+    </div>
+
+    <section class="queue-section">
+      <div class="queue-header">
+        <h2>Do zrobienia</h2>
+        <span id="queueCount">0</span>
+      </div>
+      <div class="queue-list" id="queueList">
+        <div class="empty-state">
+          <strong>Kolejka pusta</strong>
+          Wybierz pizzę powyżej
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Działa offline • Dane lokalne</footer>
+
+  <script>
+    const PIZZAS = [
+      "Marinara",
+      "Margherita",
+      "Prosciutto e Funghi",
+      "Carbonara",
+      "Parma e Rucola",
+      "Salame Milano",
+      "Diavola Dolce",
+      "Quattro Formaggi"
+    ];
+
+    const STORAGE_KEY = "mobilnaItalia_kolejka_v1";
+    const UNDO_KEY = "mobilnaItalia_undo_v1";
+
+    // State
+    let queue = [];      // array of {id, name}
+    let undoStack = [];  // array of {id, name} removed items (LIFO)
+    let nextId = 1;
+
+    // DOM
+    const pizzaButtonsEl = document.getElementById("pizzaButtons");
+    const queueListEl = document.getElementById("queueList");
+    const queueCountEl = document.getElementById("queueCount");
+    const countBadgeEl = document.getElementById("countBadge");
+    const undoBtn = document.getElementById("undoBtn");
+
+    // --- Persistence ---
+    function loadState() {
+      try {
+        const q = localStorage.getItem(STORAGE_KEY);
+        const u = localStorage.getItem(UNDO_KEY);
+        if (q) {
+          const parsed = JSON.parse(q);
+          if (Array.isArray(parsed)) {
+            queue = parsed;
+            // recover nextId
+            const maxId = queue.reduce((m, item) => Math.max(m, item.id || 0), 0);
+            nextId = maxId + 1;
+          }
+        }
+        if (u) {
+          const parsedU = JSON.parse(u);
+          if (Array.isArray(parsedU)) {
+            undoStack = parsedU;
+          }
+        }
+      } catch (e) {
+        console.warn("Load error", e);
+        queue = [];
+        undoStack = [];
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+        localStorage.setItem(UNDO_KEY, JSON.stringify(undoStack));
+      } catch (e) {
+        console.warn("Save error", e);
+      }
+    }
+
+    // --- Actions ---
+    function addPizza(name) {
+      const item = { id: nextId++, name };
+      queue.push(item);
+      // Adding does NOT clear undo history (as requested)
+      saveState();
+      render();
+    }
+
+    function completePizza(id) {
+      const idx = queue.findIndex(item => item.id === id);
+      if (idx === -1) return;
+      const [item] = queue.splice(idx, 1);
+      undoStack.push(item);
+      // limit undo history to reasonable size (e.g. 50)
+      if (undoStack.length > 50) {
+        undoStack.shift();
+      }
+      saveState();
+      render();
+    }
+
+    function undo() {
+      if (undoStack.length === 0) return;
+      const item = undoStack.pop();
+      // put back at the end of the queue
+      queue.push(item);
+      saveState();
+      render();
+    }
+
+    // --- Render ---
+    function render() {
+      // Pizza buttons (static, once)
+      // Queue list
+      if (queue.length === 0) {
+        queueListEl.innerHTML = `
+          <div class="empty-state">
+            <strong>Kolejka pusta</strong>
+            Wybierz pizzę powyżej
+          </div>`;
+      } else {
+        queueListEl.innerHTML = queue.map(item => `
+          <div class="queue-item" data-id="${item.id}">
+            <div class="name">${escapeHtml(item.name)}</div>
+            <button class="check-btn" aria-label="Gotowe" data-id="${item.id}">✓</button>
+          </div>
+        `).join("");
+      }
+
+      queueCountEl.textContent = queue.length;
+      countBadgeEl.textContent = queue.length;
+      undoBtn.disabled = undoStack.length === 0;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // --- Init buttons ---
+    function initButtons() {
+      pizzaButtonsEl.innerHTML = PIZZAS.map(name => `
+        <button class="pizza-btn" data-name="${escapeHtml(name)}">${escapeHtml(name)}</button>
+      `).join("");
+
+      pizzaButtonsEl.addEventListener("click", (e) => {
+        const btn = e.target.closest(".pizza-btn");
+        if (!btn) return;
+        const name = btn.dataset.name;
+        if (name) addPizza(name);
+      });
+
+      queueListEl.addEventListener("click", (e) => {
+        const btn = e.target.closest(".check-btn");
+        if (!btn) return;
+        const id = parseInt(btn.dataset.id, 10);
+        if (!isNaN(id)) completePizza(id);
+      });
+
+      undoBtn.addEventListener("click", undo);
+    }
+
+    // --- Service Worker ---
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+          .then(reg => console.log("SW registered", reg.scope))
+          .catch(err => console.warn("SW failed", err));
+      });
+    }
+
+    // Start
+    loadState();
+    initButtons();
+    render();
+  </script>
+</body>
+</html>
