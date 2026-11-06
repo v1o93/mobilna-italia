@@ -17,7 +17,6 @@
       --bg: #F5F0E6;
       --green: #1B4D3E;
       --green-dark: #0F3329;
-      --green-light: #2A6B55;
       --cream: #FDF8F0;
       --red: #C8102E;
       --red-dark: #9E0C24;
@@ -25,7 +24,7 @@
       --text-muted: #5A5A5A;
       --border: #E0D8C8;
       --shadow: rgba(27, 77, 62, 0.12);
-      --radius: 14px;
+      --radius: 12px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -52,62 +51,37 @@
       padding-bottom: var(--safe-bottom);
     }
 
-    /* Header */
-    header {
-      background: var(--green);
-      color: white;
-      padding: 14px 16px 12px;
-      text-align: center;
-      flex-shrink: 0;
-      box-shadow: 0 2px 12px var(--shadow);
-    }
-
-    header h1 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      line-height: 1.2;
-    }
-
-    header p {
-      font-size: 0.75rem;
-      opacity: 0.85;
-      margin-top: 2px;
-      font-weight: 500;
-    }
-
-    /* Main content */
     main {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      padding: 12px 12px 0;
+      padding: 8px 10px 0;
     }
 
-    /* Pizza buttons grid */
+    /* Pizza buttons – mniejsze */
     .pizzas {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 7px;
       flex-shrink: 0;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .pizza-btn {
       background: var(--cream);
-      border: 2px solid var(--green);
+      border: 1.5px solid var(--green);
       color: var(--green-dark);
       border-radius: var(--radius);
-      padding: 16px 8px;
-      font-size: 0.95rem;
+      padding: 10px 6px;
+      font-size: 0.88rem;
       font-weight: 650;
-      line-height: 1.25;
+      line-height: 1.2;
       text-align: center;
       cursor: pointer;
-      transition: background 0.12s, transform 0.08s, box-shadow 0.12s;
-      box-shadow: 0 2px 6px var(--shadow);
-      min-height: 62px;
+      transition: background 0.12s, transform 0.08s;
+      box-shadow: 0 1px 4px var(--shadow);
+      min-height: 46px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -119,14 +93,13 @@
       background: var(--green);
       color: white;
       transform: scale(0.97);
-      box-shadow: 0 1px 3px var(--shadow);
     }
 
-    /* Undo bar */
+    /* Undo bar – kompaktowy */
     .undo-bar {
       display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 8px;
       flex-shrink: 0;
     }
 
@@ -136,12 +109,12 @@
       color: white;
       border: none;
       border-radius: var(--radius);
-      padding: 14px 12px;
-      font-size: 1.05rem;
+      padding: 11px 10px;
+      font-size: 0.95rem;
       font-weight: 700;
       letter-spacing: 0.04em;
       cursor: pointer;
-      box-shadow: 0 3px 8px rgba(200, 16, 46, 0.25);
+      box-shadow: 0 2px 6px rgba(200, 16, 46, 0.22);
       transition: background 0.12s, transform 0.08s;
       user-select: none;
     }
@@ -162,18 +135,18 @@
       background: var(--green);
       color: white;
       border-radius: var(--radius);
-      padding: 14px 16px;
-      font-size: 1.1rem;
+      padding: 11px 14px;
+      font-size: 1rem;
       font-weight: 700;
-      min-width: 70px;
+      min-width: 56px;
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px var(--shadow);
+      box-shadow: 0 1px 4px var(--shadow);
     }
 
-    /* Queue section */
+    /* Queue – maksymalnie dużo miejsca */
     .queue-section {
       flex: 1;
       display: flex;
@@ -183,11 +156,11 @@
       border-radius: var(--radius) var(--radius) 0 0;
       border: 1px solid var(--border);
       border-bottom: none;
-      box-shadow: 0 -2px 10px var(--shadow);
+      box-shadow: 0 -1px 8px var(--shadow);
     }
 
     .queue-header {
-      padding: 12px 16px 10px;
+      padding: 8px 12px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -197,18 +170,18 @@
     }
 
     .queue-header h2 {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--green-dark);
     }
 
     .queue-header span {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-muted);
       background: white;
-      padding: 4px 10px;
-      border-radius: 20px;
+      padding: 3px 9px;
+      border-radius: 16px;
       border: 1px solid var(--border);
     }
 
@@ -216,49 +189,43 @@
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 8px;
+      padding: 6px;
     }
 
     .queue-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 10px 10px 14px;
-      margin-bottom: 8px;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
+      border-radius: 10px;
+      padding: 7px 8px 7px 12px;
+      margin-bottom: 6px;
     }
 
     .queue-item .name {
       flex: 1;
-      font-size: 1.05rem;
+      font-size: 0.98rem;
       font-weight: 600;
       color: var(--text);
-      line-height: 1.3;
+      line-height: 1.25;
     }
 
     .check-btn {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
       background: var(--green);
       color: white;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px var(--shadow);
+      box-shadow: 0 1px 4px var(--shadow);
       transition: background 0.12s, transform 0.08s;
       user-select: none;
     }
@@ -270,40 +237,23 @@
 
     .empty-state {
       text-align: center;
-      padding: 40px 20px;
+      padding: 28px 16px;
       color: var(--text-muted);
-      font-size: 1rem;
-      line-height: 1.5;
+      font-size: 0.95rem;
+      line-height: 1.45;
     }
 
     .empty-state strong {
       display: block;
       color: var(--green);
-      font-size: 1.15rem;
-      margin-bottom: 6px;
-    }
-
-    /* Footer note */
-    footer {
-      text-align: center;
-      padding: 6px;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      background: var(--bg);
-      flex-shrink: 0;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Mobilna Italia</h1>
-    <p>Kolejka Pizz</p>
-  </header>
-
   <main>
-    <div class="pizzas" id="pizzaButtons">
-      <!-- filled by JS -->
-    </div>
+    <div class="pizzas" id="pizzaButtons"></div>
 
     <div class="undo-bar">
       <button class="undo-btn" id="undoBtn" disabled>COFNIJ</button>
@@ -324,8 +274,6 @@
     </section>
   </main>
 
-  <footer>Działa offline • Dane lokalne</footer>
-
   <script>
     const PIZZAS = [
       "Marinara",
@@ -338,12 +286,12 @@
       "Quattro Formaggi"
     ];
 
-    const STORAGE_KEY = "mobilnaItalia_kolejka_v1";
-    const UNDO_KEY = "mobilnaItalia_undo_v1";
+    const STORAGE_KEY = "mobilnaItalia_kolejka_v2";
+    const UNDO_KEY = "mobilnaItalia_undo_v2";
 
     // State
-    let queue = [];      // array of {id, name}
-    let undoStack = [];  // array of {id, name} removed items (LIFO)
+    let queue = [];        // [{id, name}]
+    let undoStack = [];    // [{type: 'add'|'complete', item}]
     let nextId = 1;
 
     // DOM
@@ -353,7 +301,6 @@
     const countBadgeEl = document.getElementById("countBadge");
     const undoBtn = document.getElementById("undoBtn");
 
-    // --- Persistence ---
     function loadState() {
       try {
         const q = localStorage.getItem(STORAGE_KEY);
@@ -362,7 +309,6 @@
           const parsed = JSON.parse(q);
           if (Array.isArray(parsed)) {
             queue = parsed;
-            // recover nextId
             const maxId = queue.reduce((m, item) => Math.max(m, item.id || 0), 0);
             nextId = maxId + 1;
           }
@@ -374,7 +320,6 @@
           }
         }
       } catch (e) {
-        console.warn("Load error", e);
         queue = [];
         undoStack = [];
       }
@@ -384,16 +329,18 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
         localStorage.setItem(UNDO_KEY, JSON.stringify(undoStack));
-      } catch (e) {
-        console.warn("Save error", e);
-      }
+      } catch (e) {}
     }
 
-    // --- Actions ---
+    function pushUndo(entry) {
+      undoStack.push(entry);
+      if (undoStack.length > 60) undoStack.shift();
+    }
+
     function addPizza(name) {
       const item = { id: nextId++, name };
       queue.push(item);
-      // Adding does NOT clear undo history (as requested)
+      pushUndo({ type: "add", item });
       saveState();
       render();
     }
@@ -402,28 +349,29 @@
       const idx = queue.findIndex(item => item.id === id);
       if (idx === -1) return;
       const [item] = queue.splice(idx, 1);
-      undoStack.push(item);
-      // limit undo history to reasonable size (e.g. 50)
-      if (undoStack.length > 50) {
-        undoStack.shift();
-      }
+      pushUndo({ type: "complete", item });
       saveState();
       render();
     }
 
     function undo() {
       if (undoStack.length === 0) return;
-      const item = undoStack.pop();
-      // put back at the end of the queue
-      queue.push(item);
+      const entry = undoStack.pop();
+
+      if (entry.type === "add") {
+        // Cofnij dodanie = usuń tę pizzę z kolejki
+        const idx = queue.findIndex(i => i.id === entry.item.id);
+        if (idx !== -1) queue.splice(idx, 1);
+      } else if (entry.type === "complete") {
+        // Cofnij odhaczenie = przywróć pizzę do kolejki
+        queue.push(entry.item);
+      }
+
       saveState();
       render();
     }
 
-    // --- Render ---
     function render() {
-      // Pizza buttons (static, once)
-      // Queue list
       if (queue.length === 0) {
         queueListEl.innerHTML = `
           <div class="empty-state">
@@ -450,7 +398,6 @@
       return div.innerHTML;
     }
 
-    // --- Init buttons ---
     function initButtons() {
       pizzaButtonsEl.innerHTML = PIZZAS.map(name => `
         <button class="pizza-btn" data-name="${escapeHtml(name)}">${escapeHtml(name)}</button>
@@ -473,16 +420,13 @@
       undoBtn.addEventListener("click", undo);
     }
 
-    // --- Service Worker ---
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./service-worker.js")
-          .then(reg => console.log("SW registered", reg.scope))
-          .catch(err => console.warn("SW failed", err));
+          .catch(() => {});
       });
     }
 
-    // Start
     loadState();
     initButtons();
     render();
