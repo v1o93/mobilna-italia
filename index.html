@@ -59,43 +59,44 @@
       padding: 8px 10px 0;
     }
 
-    /* Pizza buttons – mniejsze */
+    /* Pizza buttons – dobre do klikania na małym ekranie */
     .pizzas {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 7px;
+      gap: 8px;
       flex-shrink: 0;
       margin-bottom: 8px;
     }
 
     .pizza-btn {
       background: var(--cream);
-      border: 1.5px solid var(--green);
+      border: 2px solid var(--green);
       color: var(--green-dark);
       border-radius: var(--radius);
-      padding: 10px 6px;
-      font-size: 0.88rem;
+      padding: 12px 8px;
+      font-size: 0.9rem;
       font-weight: 650;
       line-height: 1.2;
       text-align: center;
       cursor: pointer;
-      transition: background 0.12s, transform 0.08s;
+      transition: background 0.1s, transform 0.08s;
       box-shadow: 0 1px 4px var(--shadow);
-      min-height: 46px;
+      min-height: 52px;
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
       -webkit-user-select: none;
+      touch-action: manipulation;
     }
 
     .pizza-btn:active {
       background: var(--green);
       color: white;
-      transform: scale(0.97);
+      transform: scale(0.96);
     }
 
-    /* Undo bar – kompaktowy */
+    /* Undo bar */
     .undo-bar {
       display: flex;
       gap: 8px;
@@ -109,14 +110,17 @@
       color: white;
       border: none;
       border-radius: var(--radius);
-      padding: 11px 10px;
-      font-size: 0.95rem;
+      padding: 13px 10px;
+      font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.04em;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(200, 16, 46, 0.22);
-      transition: background 0.12s, transform 0.08s;
+      transition: background 0.1s, transform 0.08s;
       user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      min-height: 48px;
     }
 
     .undo-btn:active {
@@ -135,8 +139,8 @@
       background: var(--green);
       color: white;
       border-radius: var(--radius);
-      padding: 11px 14px;
-      font-size: 1rem;
+      padding: 13px 14px;
+      font-size: 1.05rem;
       font-weight: 700;
       min-width: 56px;
       text-align: center;
@@ -146,7 +150,7 @@
       box-shadow: 0 1px 4px var(--shadow);
     }
 
-    /* Queue – maksymalnie dużo miejsca */
+    /* Queue */
     .queue-section {
       flex: 1;
       display: flex;
@@ -199,8 +203,22 @@
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 7px 8px 7px 12px;
+      padding: 6px 6px 6px 8px;
       margin-bottom: 6px;
+    }
+
+    .queue-item .num {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--green);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .queue-item .name {
@@ -209,16 +227,17 @@
       font-weight: 600;
       color: var(--text);
       line-height: 1.25;
+      min-width: 0;
     }
 
     .check-btn {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 10px;
       background: var(--green);
       color: white;
       border: none;
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -226,8 +245,10 @@
       justify-content: center;
       flex-shrink: 0;
       box-shadow: 0 1px 4px var(--shadow);
-      transition: background 0.12s, transform 0.08s;
+      transition: background 0.1s, transform 0.08s;
       user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
     }
 
     .check-btn:active {
@@ -286,13 +307,15 @@
       "Quattro Formaggi"
     ];
 
-    const STORAGE_KEY = "mobilnaItalia_kolejka_v2";
-    const UNDO_KEY = "mobilnaItalia_undo_v2";
+    const STORAGE_KEY = "mobilnaItalia_kolejka_v3";
+    const UNDO_KEY = "mobilnaItalia_undo_v3";
+    const NEXT_NUM_KEY = "mobilnaItalia_nextNum_v3";
 
     // State
-    let queue = [];        // [{id, name}]
+    let queue = [];        // [{id, number, name}]
     let undoStack = [];    // [{type: 'add'|'complete', item}]
     let nextId = 1;
+    let nextNumber = 1;    // numer dla klienta (nie resetuje się)
 
     // DOM
     const pizzaButtonsEl = document.getElementById("pizzaButtons");
@@ -305,6 +328,8 @@
       try {
         const q = localStorage.getItem(STORAGE_KEY);
         const u = localStorage.getItem(UNDO_KEY);
+        const n = localStorage.getItem(NEXT_NUM_KEY);
+
         if (q) {
           const parsed = JSON.parse(q);
           if (Array.isArray(parsed)) {
@@ -315,10 +340,15 @@
         }
         if (u) {
           const parsedU = JSON.parse(u);
-          if (Array.isArray(parsedU)) {
-            undoStack = parsedU;
-          }
+          if (Array.isArray(parsedU)) undoStack = parsedU;
         }
+        if (n) {
+          const num = parseInt(n, 10);
+          if (!isNaN(num) && num > 0) nextNumber = num;
+        }
+        // jeśli w kolejce są numery wyższe – dogoń
+        const maxNum = queue.reduce((m, item) => Math.max(m, item.number || 0), 0);
+        if (maxNum >= nextNumber) nextNumber = maxNum + 1;
       } catch (e) {
         queue = [];
         undoStack = [];
@@ -329,6 +359,7 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
         localStorage.setItem(UNDO_KEY, JSON.stringify(undoStack));
+        localStorage.setItem(NEXT_NUM_KEY, String(nextNumber));
       } catch (e) {}
     }
 
@@ -338,7 +369,11 @@
     }
 
     function addPizza(name) {
-      const item = { id: nextId++, name };
+      const item = {
+        id: nextId++,
+        number: nextNumber++,
+        name
+      };
       queue.push(item);
       pushUndo({ type: "add", item });
       saveState();
@@ -359,11 +394,9 @@
       const entry = undoStack.pop();
 
       if (entry.type === "add") {
-        // Cofnij dodanie = usuń tę pizzę z kolejki
         const idx = queue.findIndex(i => i.id === entry.item.id);
         if (idx !== -1) queue.splice(idx, 1);
       } else if (entry.type === "complete") {
-        // Cofnij odhaczenie = przywróć pizzę do kolejki
         queue.push(entry.item);
       }
 
@@ -381,6 +414,7 @@
       } else {
         queueListEl.innerHTML = queue.map(item => `
           <div class="queue-item" data-id="${item.id}">
+            <div class="num">${item.number}</div>
             <div class="name">${escapeHtml(item.name)}</div>
             <button class="check-btn" aria-label="Gotowe" data-id="${item.id}">✓</button>
           </div>
@@ -422,8 +456,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js")
-          .catch(() => {});
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
       });
     }
 
